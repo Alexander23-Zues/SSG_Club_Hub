@@ -135,8 +135,10 @@ app.use("/", router);
 // Initialize database
 initializeDatabase().catch(console.error);
 
+// For Vercel deployment
 export default app;
 
-if (!process.env.ELECTRON) {
+// For local development
+if (!process.env.VERCEL && !process.env.ELECTRON) {
   app.listen(PORT, () => console.log(`🔥 XianFire running at http://localhost:${PORT}`));
 }

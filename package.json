@@ -1,18 +1,21 @@
 {
   "name": "SSG_Club_Hub",
   "version": "1.0.0",
-  "main": "electron/main.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "xian-start": "node index.js",
-    "xian": "nodemon index.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "echo 'Build completed successfully'",
     "migrate": "node migrate.js",
     "create:model": "node create.js model",
     "create:controller": "node create.js controller",
+    "xian-start": "node index.js",
+    "xian": "nodemon index.js",
     "xianca": "electron .",
     "xian-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && electron .\"",
     "xian-build": "electron-builder",
-    "build": "npm run electron-build",
+    "electron-build": "electron-builder",
     "dist": "npm run electron-build -- --publish=never"
   },
   "dependencies": {
