@@ -1,0 +1,310 @@
+{{> head}}
+<body class="bg-gray-50">
+  {{#if user}}
+    {{#if (eq user.role 'admin')}}
+      {{> admin-nav}}
+    {{else if (eq user.role 'officer')}}
+      {{> officer-nav}}
+    {{else}}
+      {{> member-nav}}
+    {{/if}}
+  {{else}}
+    <!-- Guest navigation -->
+    <nav class="bg-blue-600 text-white shadow-lg">
+      <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+          <div class="flex items-center space-x-8">
+            <h1 class="text-xl font-bold">Masaguisi National High School ClubHub Assistant</h1>
+          </div>
+          <div class="flex items-center space-x-4">
+            <a href="/" class="hover:text-blue-200 transition duration-200">Home</a>
+            <a href="/login" class="hover:text-blue-200 transition duration-200">Login</a>
+            <a href="/register" class="hover:text-blue-200 transition duration-200">Register</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  {{/if}}
+  
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header Section -->
+      <div class="mb-8 text-center">
+        <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <span class="text-4xl">🤖</span>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">ClubHub AI Assistant</h1>
+        <p class="text-lg text-gray-600 mb-4">Your 24/7 intelligent guide to Masaguisi National High School ClubHub</p>
+        <div class="flex justify-center space-x-4 text-sm text-gray-500">
+          <span class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>Online</span>
+          <span class="flex items-center"><span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>AI Powered</span>
+          <span class="flex items-center"><span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>South Bongabong, Oriental Mindoro</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Quick Help Section -->
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Help Topics</h3>
+            <div class="space-y-2">
+              <button class="quick-question w-full text-left p-3 bg-gray-50 hover:bg-blue-50 rounded-lg transition duration-200" data-question="About Masaguisi National High School">
+                <span class="text-blue-600">🏫</span> About Masaguisi National High School
+              </button>
+              <button class="quick-question w-full text-left p-3 bg-gray-50 hover:bg-blue-50 rounded-lg transition duration-200" data-question="Ano ang ClubHub?">
+                <span class="text-green-600">💻</span> Ano ang ClubHub?
+              </button>
+              <button class="quick-question w-full text-left p-3 bg-gray-50 hover:bg-blue-50 rounded-lg transition duration-200" data-question="Paano sumali sa organizations?">
+                <span class="text-purple-600">👥</span> Paano sumali sa organizations?
+              </button>
+              <button class="quick-question w-full text-left p-3 bg-gray-50 hover:bg-blue-50 rounded-lg transition duration-200" data-question="Grade levels and strands">
+                <span class="text-indigo-600">📚</span> Grade levels & strands
+              </button>
+              <button class="quick-question w-full text-left p-3 bg-gray-50 hover:bg-blue-50 rounded-lg transition duration-200" data-question="School events and activities">
+                <span class="text-orange-600">🎉</span> School events & activities
+              </button>
+              <button class="quick-question w-full text-left p-3 bg-gray-50 hover:bg-blue-50 rounded-lg transition duration-200" data-question="School facilities">
+                <span class="text-teal-600">🏢</span> School facilities
+              </button>
+              <button class="quick-question w-full text-left p-3 bg-gray-50 hover:bg-blue-50 rounded-lg transition duration-200" data-question="Enrollment requirements">
+                <span class="text-red-600">📝</span> Enrollment info
+              </button>
+              <button class="quick-question w-full text-left p-3 bg-gray-50 hover:bg-blue-50 rounded-lg transition duration-200" data-question="Contact information">
+                <span class="text-pink-600">📞</span> Contact info
+              </button>
+            </div>
+          </div>
+
+          <!-- System Stats -->
+          <div class="bg-white rounded-lg shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">School Overview</h3>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-gray-600">Location</span>
+                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">South Bongabong</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-600">Province</span>
+                <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Oriental Mindoro</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-600">Grade Levels</span>
+                <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm">7-12</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-600">AI Assistant</span>
+                <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">24/7 Active</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Section -->
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <!-- Chat Header -->
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-4">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    🤖
+                  </div>
+                  <div>
+                    <h3 class="font-semibold">ClubHub AI Assistant</h3>
+                    <p class="text-sm text-blue-100">Powered by intelligent rule-based responses</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm text-blue-100">{{#if user}}Welcome, {{user.name}}{{else}}Guest Mode{{/if}}</p>
+                  <p class="text-xs text-blue-200">{{#if user}}Chat history saved{{else}}Chat not saved{{/if}}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div id="chatMessages" class="h-96 overflow-y-auto p-6 space-y-4 bg-gray-50">
+              <!-- Welcome Message -->
+              <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm">
+                  🤖
+                </div>
+                <div class="bg-white rounded-lg px-4 py-3 max-w-md shadow-sm">
+                  <p class="text-sm">Kumusta! Welcome sa Masaguisi National High School ClubHub! 🏫 Ako ang inyong AI assistant na handang tumulong sa lahat ng tanong tungkol sa Masaguisi National High School sa South Bongabong, Oriental Mindoro at sa aming organization management system. Ano ang maitutulong ko sa inyo ngayong araw? 😊</p>
+                  <span class="text-xs text-gray-500 mt-1 block">Just now</span>
+                </div>
+              </div>
+
+              <!-- Load conversation history if user is logged in -->
+              {{#if conversationHistory}}
+                {{#each conversationHistory}}
+                  <!-- User Message -->
+                  <div class="flex items-start space-x-3 justify-end">
+                    <div class="bg-blue-500 text-white rounded-lg px-4 py-3 max-w-md shadow-sm">
+                      <p class="text-sm">{{user_message}}</p>
+                      <span class="text-xs text-blue-200 mt-1 block">{{created_at}}</span>
+                    </div>
+                    <div class="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white text-sm">
+                      👤
+                    </div>
+                  </div>
+
+                  <!-- Bot Response -->
+                  <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm">
+                      🤖
+                    </div>
+                    <div class="bg-white rounded-lg px-4 py-3 max-w-md shadow-sm">
+                      <p class="text-sm">{{bot_response}}</p>
+                      <span class="text-xs text-gray-500 mt-1 block">{{created_at}}</span>
+                    </div>
+                  </div>
+                {{/each}}
+              {{/if}}
+            </div>
+
+            <!-- Chat Input -->
+            <div class="border-t border-gray-200 p-4 bg-white">
+              <div class="flex space-x-3">
+                <input 
+                  type="text" 
+                  id="messageInput" 
+                  placeholder="Tanungin mo ako tungkol sa Masaguisi National High School, ClubHub, organizations, events, enrollment..." 
+                  class="flex-1 border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                <button 
+                  id="sendButton" 
+                  class="bg-blue-600 text-white rounded-lg px-6 py-3 hover:bg-blue-700 transition duration-200 flex items-center space-x-2"
+                >
+                  <span>Send</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="mt-2 flex justify-between items-center text-xs text-gray-500">
+                <span>💡 Pwede kayong magtanong tungkol sa school, organizations, events, enrollment, o kahit ano!</span>
+                <span id="typingIndicator" class="hidden">🤖 Nagttype ang assistant...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const messageInput = document.getElementById('messageInput');
+      const sendButton = document.getElementById('sendButton');
+      const chatMessages = document.getElementById('chatMessages');
+      const typingIndicator = document.getElementById('typingIndicator');
+      const quickQuestions = document.querySelectorAll('.quick-question');
+
+      // Quick question buttons
+      quickQuestions.forEach(button => {
+        button.addEventListener('click', function() {
+          const question = this.getAttribute('data-question');
+          messageInput.value = question;
+          sendMessage();
+        });
+      });
+
+      // Send message function
+      function sendMessage() {
+        const message = messageInput.value.trim();
+        if (!message) return;
+
+        // Add user message to chat
+        addMessage(message, 'user');
+        messageInput.value = '';
+
+        // Show typing indicator
+        showTypingIndicator();
+
+        // Send to server
+        fetch('/chatbot/message', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+          hideTypingIndicator();
+          if (data.success) {
+            addMessage(data.botResponse, 'bot');
+          } else {
+            addMessage('Sorry, may problema sa pag-process ng message. Please try again!', 'bot');
+          }
+        })
+        .catch(error => {
+          hideTypingIndicator();
+          addMessage('Sorry, may connection error. Please check your internet and try again.', 'bot');
+        });
+      }
+
+      // Add message to chat
+      function addMessage(message, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'flex items-start space-x-3';
+        
+        const timestamp = new Date().toLocaleTimeString();
+
+        if (sender === 'user') {
+          messageDiv.className += ' justify-end';
+          messageDiv.innerHTML = `
+            <div class="bg-blue-500 text-white rounded-lg px-4 py-3 max-w-md shadow-sm">
+              <p class="text-sm">${message}</p>
+              <span class="text-xs text-blue-200 mt-1 block">${timestamp}</span>
+            </div>
+            <div class="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white text-sm">
+              👤
+            </div>
+          `;
+        } else {
+          messageDiv.innerHTML = `
+            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm">
+              🤖
+            </div>
+            <div class="bg-white rounded-lg px-4 py-3 max-w-md shadow-sm">
+              <p class="text-sm">${message}</p>
+              <span class="text-xs text-gray-500 mt-1 block">${timestamp}</span>
+            </div>
+          `;
+        }
+
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      // Show typing indicator
+      function showTypingIndicator() {
+        typingIndicator.classList.remove('hidden');
+        sendButton.disabled = true;
+        sendButton.classList.add('opacity-50');
+      }
+
+      // Hide typing indicator
+      function hideTypingIndicator() {
+        typingIndicator.classList.add('hidden');
+        sendButton.disabled = false;
+        sendButton.classList.remove('opacity-50');
+      }
+
+      // Send message on button click
+      sendButton.addEventListener('click', sendMessage);
+
+      // Send message on Enter key
+      messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          sendMessage();
+        }
+      });
+
+      // Auto-focus on input
+      messageInput.focus();
+    });
+  </script>
+
+{{> footer}}

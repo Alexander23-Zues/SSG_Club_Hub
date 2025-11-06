@@ -1,0 +1,179 @@
+<!-- Floating Chatbot Widget -->
+<div id="chatbotWidget" class="fixed bottom-6 right-6 z-50">
+  <!-- Chat Button -->
+  <button id="chatbotToggle" class="bg-blue-600 hover:bg-blue-700 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110">
+    <span class="text-2xl">🤖</span>
+  </button>
+  
+  <!-- Mini Chat Window -->
+  <div id="miniChatWindow" class="hidden absolute bottom-16 right-0 w-80 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
+    <!-- Mini Chat Header -->
+    <div class="bg-blue-600 text-white px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <span class="text-lg">🤖</span>
+        <div>
+          <h4 class="font-semibold text-sm">ClubHub Assistant</h4>
+          <p class="text-xs text-blue-200">Online • Ready to help</p>
+        </div>
+      </div>
+      <button id="closeMiniChat" class="text-white hover:text-blue-200">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Mini Chat Messages -->
+    <div id="miniChatMessages" class="h-64 overflow-y-auto p-4 space-y-3">
+      <div class="flex items-start space-x-2">
+        <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs">
+          🤖
+        </div>
+        <div class="bg-gray-100 rounded-lg px-3 py-2 max-w-xs">
+          <p class="text-sm">Hi! I'm your ClubHub assistant. How can I help you today? 😊</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mini Chat Input -->
+    <div class="border-t border-gray-200 p-3">
+      <div class="flex space-x-2">
+        <input 
+          type="text" 
+          id="miniChatInput" 
+          placeholder="Type your message..." 
+          class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+        <button 
+          id="miniChatSend" 
+          class="bg-blue-600 text-white rounded-lg px-3 py-2 hover:bg-blue-700 transition duration-200"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="mt-2 text-center">
+        <a href="/chatbot" class="text-xs text-blue-600 hover:text-blue-800">Open full chat →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const chatbotToggle = document.getElementById('chatbotToggle');
+  const miniChatWindow = document.getElementById('miniChatWindow');
+  const closeMiniChat = document.getElementById('closeMiniChat');
+  const miniChatInput = document.getElementById('miniChatInput');
+  const miniChatSend = document.getElementById('miniChatSend');
+  const miniChatMessages = document.getElementById('miniChatMessages');
+  
+  // Toggle mini chat window
+  chatbotToggle.addEventListener('click', function() {
+    miniChatWindow.classList.toggle('hidden');
+  });
+  
+  // Close mini chat
+  closeMiniChat.addEventListener('click', function() {
+    miniChatWindow.classList.add('hidden');
+  });
+  
+  // Send message function
+  function sendMiniMessage() {
+    const message = miniChatInput.value.trim();
+    if (!message) return;
+    
+    // Add user message to chat
+    addMiniMessage(message, 'user');
+    miniChatInput.value = '';
+    
+    // Show typing indicator
+    addTypingIndicator();
+    
+    // Send to server
+    fetch('/chatbot/message', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message: message })
+    })
+    .then(response => response.json())
+    .then(data => {
+      removeTypingIndicator();
+      if (data.success) {
+        addMiniMessage(data.botResponse, 'bot');
+      } else {
+        addMiniMessage('Sorry, I encountered an error. Please try again.', 'bot');
+      }
+    })
+    .catch(error => {
+      removeTypingIndicator();
+      addMiniMessage('Sorry, I encountered an error. Please try again.', 'bot');
+    });
+  }
+  
+  // Add message to mini chat
+  function addMiniMessage(message, sender) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'flex items-start space-x-2';
+    
+    if (sender === 'user') {
+      messageDiv.className += ' justify-end';
+      messageDiv.innerHTML = `
+        <div class="bg-blue-500 text-white rounded-lg px-3 py-2 max-w-xs">
+          <p class="text-sm">${message}</p>
+        </div>
+      `;
+    } else {
+      messageDiv.innerHTML = `
+        <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs">
+          🤖
+        </div>
+        <div class="bg-gray-100 rounded-lg px-3 py-2 max-w-xs">
+          <p class="text-sm">${message}</p>
+        </div>
+      `;
+    }
+    
+    miniChatMessages.appendChild(messageDiv);
+    miniChatMessages.scrollTop = miniChatMessages.scrollHeight;
+  }
+  
+  // Add typing indicator
+  function addTypingIndicator() {
+    const typingDiv = document.createElement('div');
+    typingDiv.id = 'typingIndicator';
+    typingDiv.className = 'flex items-start space-x-2';
+    typingDiv.innerHTML = `
+      <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs">
+        🤖
+      </div>
+      <div class="bg-gray-100 rounded-lg px-3 py-2">
+        <p class="text-sm text-gray-500">Typing...</p>
+      </div>
+    `;
+    miniChatMessages.appendChild(typingDiv);
+    miniChatMessages.scrollTop = miniChatMessages.scrollHeight;
+  }
+  
+  // Remove typing indicator
+  function removeTypingIndicator() {
+    const typingIndicator = document.getElementById('typingIndicator');
+    if (typingIndicator) {
+      typingIndicator.remove();
+    }
+  }
+  
+  // Send message on button click
+  miniChatSend.addEventListener('click', sendMiniMessage);
+  
+  // Send message on Enter key
+  miniChatInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      sendMiniMessage();
+    }
+  });
+});
+</script>

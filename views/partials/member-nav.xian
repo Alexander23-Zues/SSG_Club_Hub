@@ -1,0 +1,26 @@
+<nav class="bg-purple-700 text-white shadow-lg">
+  <div class="container mx-auto px-4">
+    <div class="flex justify-between items-center py-4">
+      <div class="flex items-center space-x-8">
+        <h1 class="text-xl font-bold">Masaguisi ClubHub Member</h1>
+        <div class="hidden md:flex space-x-6">
+          <a href="/member/dashboard" class="hover:text-purple-200 transition duration-200">Dashboard</a>
+          <a href="/member/organizations" class="hover:text-purple-200 transition duration-200">Organizations</a>
+          <a href="/member/announcements" class="hover:text-purple-200 transition duration-200">Announcements</a>
+          <a href="/member/events" class="hover:text-purple-200 transition duration-200">Events</a>
+          <a href="/member/profile" class="hover:text-purple-200 transition duration-200">Profile</a>
+          <a href="/messages" class="hover:text-purple-200 transition duration-200 flex items-center">
+            <span class="mr-1">💬</span> Messages
+          </a>
+          <a href="/chatbot" class="hover:text-purple-200 transition duration-200 flex items-center">
+            <span class="mr-1">🤖</span> Assistant
+          </a>
+        </div>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-sm">Welcome, {{user.name}}</span>
+        <a href="/logout" class="bg-purple-600 hover:bg-purple-500 px-3 py-1 rounded text-sm transition duration-200">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>

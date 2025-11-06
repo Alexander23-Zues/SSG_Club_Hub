@@ -1,0 +1,13 @@
+<footer class="mt-8 py-4 text-center text-gray-500 text-sm">
+  <div class="mb-2">
+    &copy; 2025 XianFire Framework — Built with ❤️ at Masaguisi National High School
+  </div>
+  <div class="text-xs text-gray-400">
+    Developed by <span class="font-semibold text-blue-600">Jomari Bidaña</span>
+  </div>
+</footer>
+
+{{> chatbot-widget}}
+
+</body>
+</html>

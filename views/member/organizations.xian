@@ -1,0 +1,70 @@
+{{> head}}
+<body class="bg-gray-50">
+  {{> member-nav}}
+  
+  <div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-800">Browse Organizations</h1>
+      <p class="text-gray-600 mt-2">Discover and join campus organizations</p>
+    </div>
+
+    <!-- My Organizations -->
+    {{#if joinedOrganizations}}
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">My Organizations</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {{#each joinedOrganizations}}
+            <div class="bg-white rounded-lg shadow p-6">
+              <h3 class="text-lg font-medium text-gray-900 mb-2">{{name}}</h3>
+              <p class="text-gray-600 mb-4">{{description}}</p>
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                  {{#if (eq membership_status 'approved')}}bg-green-100 text-green-800{{/if}}
+                  {{#if (eq membership_status 'pending')}}bg-yellow-100 text-yellow-800{{/if}}">
+                  {{membership_status}}
+                </span>
+                <form method="POST" action="/member/organizations/{{id}}/leave" class="inline" onsubmit="return confirm('Are you sure you want to leave this organization?')">
+                  <button type="submit" class="text-red-600 hover:text-red-800 text-sm">Leave</button>
+                </form>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    {{/if}}
+
+    <!-- Available Organizations -->
+    <div>
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Available Organizations</h2>
+      {{#if availableOrganizations}}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {{#each availableOrganizations}}
+            <div class="bg-white rounded-lg shadow p-6">
+              <h3 class="text-lg font-medium text-gray-900 mb-2">{{name}}</h3>
+              <p class="text-gray-600 mb-4">{{description}}</p>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-gray-500">Officer: {{officer_name}}</span>
+                <form method="POST" action="/member/organizations/{{id}}/join" class="inline">
+                  <button type="submit" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition duration-200">
+                    Join
+                  </button>
+                </form>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      {{else}}
+        <div class="bg-white rounded-lg shadow p-8 text-center">
+          <div class="mb-4">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">No organizations available</h3>
+          <p class="text-gray-500">Check back later for new organizations to join.</p>
+        </div>
+      {{/if}}
+    </div>
+  </div>
+
+{{> footer}}

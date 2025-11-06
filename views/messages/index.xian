@@ -1,0 +1,274 @@
+{{> head}}
+<body class="bg-gray-50">
+  {{#if (eq user.role 'admin')}}
+    {{> admin-nav}}
+  {{else if (eq user.role 'officer')}}
+    {{> officer-nav}}
+  {{else}}
+    {{> member-nav}}
+  {{/if}}
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Messages</h1>
+        <button id="composeBtn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+          <span class="mr-2">✉️</span> Compose Message
+        </button>
+      </div>
+
+      <!-- Message Tabs -->
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="border-b border-gray-200">
+          <nav class="flex">
+            <button class="tab-btn active px-6 py-4 text-sm font-medium text-blue-600 border-b-2 border-blue-600" data-tab="inbox">
+              Inbox {{#if unreadCount}}({{unreadCount}}){{/if}}
+            </button>
+            <button class="tab-btn px-6 py-4 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="sent">
+              Sent Messages
+            </button>
+          </nav>
+        </div>
+
+        <!-- Inbox Tab -->
+        <div id="inbox" class="tab-content">
+          <div class="p-6">
+            {{#if inboxMessages}}
+              <div class="space-y-4">
+                {{#each inboxMessages}}
+                  <div class="message-item border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition duration-200 {{#unless is_read}}bg-blue-50 border-blue-200{{/unless}}">
+                    <div class="flex justify-between items-start">
+                      <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-2">
+                          <span class="font-semibold text-gray-800">{{sender_name}}</span>
+                          <span class="text-xs bg-{{#if (eq sender_role 'admin')}}red{{else if (eq sender_role 'officer')}}blue{{else}}green{{/if}}-100 text-{{#if (eq sender_role 'admin')}}red{{else if (eq sender_role 'officer')}}blue{{else}}green{{/if}}-800 px-2 py-1 rounded">{{sender_role}}</span>
+                          {{#unless is_read}}<span class="text-xs bg-blue-500 text-white px-2 py-1 rounded">NEW</span>{{/unless}}
+                        </div>
+                        <h3 class="font-medium text-gray-900 mb-1">{{subject}}</h3>
+                        <p class="text-gray-600 text-sm mb-2">{{message}}</p>
+                        <p class="text-xs text-gray-500">{{created_at}}</p>
+                      </div>
+                      <div class="flex space-x-2">
+                        {{#unless is_read}}
+                          <button class="mark-read-btn text-blue-600 hover:text-blue-800 text-sm" data-id="{{id}}">Mark Read</button>
+                        {{/unless}}
+                        <button class="delete-btn text-red-600 hover:text-red-800 text-sm" data-id="{{id}}">Delete</button>
+                      </div>
+                    </div>
+                  </div>
+                {{/each}}
+              </div>
+            {{else}}
+              <div class="text-center py-12">
+                <div class="text-6xl mb-4">📭</div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No messages yet</h3>
+                <p class="text-gray-500">Your inbox is empty. Messages from other users will appear here.</p>
+              </div>
+            {{/if}}
+          </div>
+        </div>
+
+        <!-- Sent Tab -->
+        <div id="sent" class="tab-content hidden">
+          <div class="p-6">
+            {{#if sentMessages}}
+              <div class="space-y-4">
+                {{#each sentMessages}}
+                  <div class="message-item border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition duration-200">
+                    <div class="flex justify-between items-start">
+                      <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-2">
+                          <span class="text-gray-600">To:</span>
+                          <span class="font-semibold text-gray-800">{{receiver_name}}</span>
+                        </div>
+                        <h3 class="font-medium text-gray-900 mb-1">{{subject}}</h3>
+                        <p class="text-gray-600 text-sm mb-2">{{message}}</p>
+                        <p class="text-xs text-gray-500">{{created_at}}</p>
+                      </div>
+                      <div class="flex space-x-2">
+                        <button class="delete-btn text-red-600 hover:text-red-800 text-sm" data-id="{{id}}">Delete</button>
+                      </div>
+                    </div>
+                  </div>
+                {{/each}}
+              </div>
+            {{else}}
+              <div class="text-center py-12">
+                <div class="text-6xl mb-4">📤</div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No sent messages</h3>
+                <p class="text-gray-500">Messages you send will appear here.</p>
+              </div>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compose Message Modal -->
+  <div id="composeModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+        <div class="flex justify-between items-center p-6 border-b">
+          <h3 class="text-lg font-semibold">Compose Message</h3>
+          <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <form id="messageForm" class="p-6">
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Send To:</label>
+            <select id="recipient" name="recipient" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+              <option value="">Select recipient...</option>
+              <optgroup label="Send to All">
+                <option value="role:admin">All Admins</option>
+                <option value="role:officer">All Officers</option>
+                <option value="role:member">All Members</option>
+              </optgroup>
+              <optgroup label="Individual Users">
+                {{#each allUsers}}
+                  <option value="user:{{id}}">{{name}} ({{role}})</option>
+                {{/each}}
+              </optgroup>
+            </select>
+          </div>
+          
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Subject:</label>
+            <input type="text" id="subject" name="subject" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+          </div>
+          
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Message:</label>
+            <textarea id="message" name="message" rows="4" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+          </div>
+          
+          <div class="flex justify-end space-x-3">
+            <button type="button" id="cancelBtn" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-200">Send Message</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Tab switching
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const tabId = this.getAttribute('data-tab');
+          
+          // Update active tab
+          tabBtns.forEach(b => b.classList.remove('active', 'text-blue-600', 'border-blue-600'));
+          tabBtns.forEach(b => b.classList.add('text-gray-500'));
+          this.classList.add('active', 'text-blue-600', 'border-blue-600');
+          this.classList.remove('text-gray-500');
+          
+          // Show/hide content
+          tabContents.forEach(content => content.classList.add('hidden'));
+          document.getElementById(tabId).classList.remove('hidden');
+        });
+      });
+
+      // Modal handling
+      const composeBtn = document.getElementById('composeBtn');
+      const composeModal = document.getElementById('composeModal');
+      const closeModal = document.getElementById('closeModal');
+      const cancelBtn = document.getElementById('cancelBtn');
+      
+      composeBtn.addEventListener('click', () => composeModal.classList.remove('hidden'));
+      closeModal.addEventListener('click', () => composeModal.classList.add('hidden'));
+      cancelBtn.addEventListener('click', () => composeModal.classList.add('hidden'));
+      
+      // Form submission
+      const messageForm = document.getElementById('messageForm');
+      messageForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const recipient = document.getElementById('recipient').value;
+        const subject = document.getElementById('subject').value;
+        const message = document.getElementById('message').value;
+        
+        if (!recipient || !subject || !message) {
+          alert('Please fill in all fields');
+          return;
+        }
+        
+        let data = { subject, message };
+        
+        if (recipient.startsWith('user:')) {
+          data.receiver_id = recipient.replace('user:', '');
+        } else if (recipient.startsWith('role:')) {
+          data.receiver_role = recipient.replace('role:', '');
+        }
+        
+        fetch('/messages/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Message sent successfully!');
+            composeModal.classList.add('hidden');
+            messageForm.reset();
+            location.reload();
+          } else {
+            alert(data.error || 'Failed to send message');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to send message');
+        });
+      });
+
+      // Mark as read
+      document.querySelectorAll('.mark-read-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const messageId = this.getAttribute('data-id');
+          
+          fetch(`/messages/${messageId}/read`, {
+            method: 'POST'
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              location.reload();
+            }
+          });
+        });
+      });
+
+      // Delete message
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (confirm('Are you sure you want to delete this message?')) {
+            const messageId = this.getAttribute('data-id');
+            
+            fetch(`/messages/${messageId}/delete`, {
+              method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                location.reload();
+              } else {
+                alert(data.error || 'Failed to delete message');
+              }
+            });
+          }
+        });
+      });
+    });
+  </script>
+
+{{> footer}}
